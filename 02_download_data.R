@@ -3,24 +3,17 @@
 
 # For example, to download the simple Iris data from the UCI Machine Learning
 # Repository
-uci.iris <- read.csv("https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data",
-                     header = FALSE)
+temp <- tempfile()
+download.file('https://archive.ics.uci.edu/ml/machine-learning-databases/00222/bank-additional.zip',
+              temp)
+uci.bank <- read.csv(unzip(zipfile = temp,
+                           files = 'bank-additional/bank-additional-full.csv', junkpaths = TRUE),
+                     header = TRUE, sep = ';',
+                     stringsAsFactors = FALSE)
 
 library("dplyr")
 library("forcats")
 
-# Apply the names as defined on the website https://archive.ics.uci.edu/ml/datasets/Iris
-# and update the class labels to be shorter
-uci.iris <- uci.iris %>%
-  transmute(SepalLength = V1,
-            SepalWidth  = V2,
-            PetalLength = V3,
-            PetalWidth  = V4,
-            Class       = V5) %>%
-  mutate(Class = fct_recode(Class,
-                            Setosa     = "Iris-setosa",
-                            Versicolor = "Iris-versicolor",
-                            Virginica  = "Iris-virginica"))
 
 # Save into Data directory which is not pushed to Github
-saveRDS(uci.iris, "Data/uci_iris.rds")
+saveRDS(uci.bank, "Data/uci_bank.rds")
